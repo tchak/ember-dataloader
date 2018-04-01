@@ -1,7 +1,7 @@
 ember-dataloader
 ==============================================================================
 
-[Short description of the addon.]
+DataLoader is a generic utility to be used as part of your application's data fetching layer to provide a simplified and consistent API over various remote data sources such as databases or web services via batching and caching.
 
 Installation
 ------------------------------------------------------------------------------
@@ -14,7 +14,13 @@ ember install ember-dataloader
 Usage
 ------------------------------------------------------------------------------
 
-[Longer description of how to use the addon in apps.]
+```javascript
+import DataLoader from 'ember-dataloader';
+
+let loader = new DataLoader(keys => fetch('/items?ids=' + keys.join(',')));
+
+loader.load(1).then(item => item);
+```
 
 
 Contributing
