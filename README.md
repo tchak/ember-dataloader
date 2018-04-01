@@ -1,6 +1,10 @@
 ember-dataloader
 ==============================================================================
 
+[![Build Status](https://travis-ci.org/tchak/ember-dataloader.svg?branch=master)](https://travis-ci.org/tchak/ember-dataloader)
+[![Ember Observer Score](http://emberobserver.com/badges/ember-dataloader.svg)](http://emberobserver.com/addons/ember-dataloader)
+[![npm version](https://badge.fury.io/js/ember-dataloader.svg)](http://badge.fury.io/js/ember-dataloader)
+
 DataLoader is a generic utility to be used as part of your application's data fetching layer to provide a simplified and consistent API over various remote data sources such as databases or web services via batching and caching.
 
 Installation
