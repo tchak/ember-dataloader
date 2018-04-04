@@ -65,23 +65,26 @@ module('DataLoader', function() {
     assert.deepEqual(data, ['item 1', 'item 1', 'item 1']);
   });
 
-  test('#load(1) #load(1) #load(1, { reload: true })', async function(assert) {
-    assert.expect(4);
+  test('#load(1) [#load(1, { reload: true }) #load(1, { reload: true })] #load(1, { reload: true })', async function(assert) {
+    assert.expect(5);
     let i = 0;
     let loader = new DataLoader(async keys => {
-      assert.deepEqual([1], keys);
+      assert.deepEqual(keys, [1]);
       i++;
       return keys.map(key => `item ${i + key}`);
     });
     let d = run(() => loader.load(1));
     let data = [await d];
-    d = run(() => loader.load(1));
+    d = run(() => {
+      loader.load(1, { reload: true });
+      return loader.load(1, { reload: true });
+    });
     data.push(await d);
     d = run(() => loader.load(1, { reload: true }));
     data.push(await d);
 
-    assert.equal('item 2', data[1]);
-    assert.deepEqual(['item 2', 'item 2', 'item 3'], data);
+    assert.equal('item 3', data[1]);
+    assert.deepEqual(data, ['item 2', 'item 3', 'item 4']);
   });
 
   test('#prime(1) #load(1)', async function(assert) {

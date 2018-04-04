@@ -30,6 +30,7 @@ export default class DataLoader {
     scope.batchLoadFn = batchLoadFn;
     scope.options = { cache, batch, freeze, cacheKeyFn, maxBatchSize };
     scope.cache = getValidCacheMap(cacheMap);
+    scope.inflight = new Map();
     scope.queue = [];
   }
 
@@ -45,17 +46,24 @@ export default class DataLoader {
     }
 
     // Determine options
-    let { options, cache, queue } = getPrivateScope(this);
+    let { options, cache, queue, inflight } = getPrivateScope(this);
     let { cacheKeyFn } = options;
     let shouldBatch = options.batch !== false;
     let shouldCache = options.cache !== false;
-    let cacheKey = cacheKeyFn ? cacheKeyFn(key) : key;
+    let cacheKey = shouldCache && (cacheKeyFn ? cacheKeyFn(key) : key);
 
     // If caching and there is a cache-hit, return cached Promise.
-    if (shouldCache && reload === false) {
-      let promise = cache.get(cacheKey);
-      if (promise) {
-        return promise;
+    if (shouldCache) {
+      if (reload === false) {
+        let promise = cache.get(cacheKey);
+        if (promise) {
+          return promise;
+        }
+      }
+
+      let loadingPromise = inflight.get(cacheKey);
+      if (loadingPromise) {
+        return loadingPromise;
       }
     }
 
@@ -80,6 +88,8 @@ export default class DataLoader {
 
     // If caching, cache this promise.
     if (shouldCache) {
+      inflight.set(cacheKey, promise);
+      promise.finally(() => inflight.delete(cacheKey));
       cache.set(cacheKey, promise);
     }
 
