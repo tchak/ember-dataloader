@@ -37,7 +37,7 @@ export default class DataLoader {
    * Loads a key, returning a `Promise` for the value represented by that key.
    */
   load(key, { reload = false } = { reload: false }) {
-    if (key === null || key === undefined) {
+    if (key == null) {
       throw new TypeError(
         'The loader.load() function must be called with a value,' +
           `but got: ${String(key)}.`
