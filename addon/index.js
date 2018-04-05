@@ -1,5 +1,5 @@
 import { once } from '@ember/runloop';
-import RSVP from 'rsvp';
+import { all, Promise, resolve, reject } from 'rsvp';
 
 import deepFreeze from './-private/deep-freeze';
 
@@ -68,7 +68,7 @@ export default class DataLoader {
     }
 
     // Otherwise, produce a new Promise for this value.
-    let promise = new RSVP.Promise((resolve, reject) => {
+    let promise = new Promise((resolve, reject) => {
       // Enqueue this Promise to be dispatched.
       queue.push({ key, resolve, reject });
 
@@ -116,7 +116,7 @@ export default class DataLoader {
           `but got: ${keys}.`
       );
     }
-    return RSVP.all(keys.map(key => this.load(key)));
+    return all(keys.map(key => this.load(key)));
   }
 
   /**
@@ -152,7 +152,7 @@ export default class DataLoader {
     if (!cache.get(cacheKey)) {
       // Cache a rejected promise if the value is an Error, in order to match
       // the behavior of load(key).
-      let promise = isError(value) ? RSVP.reject(value) : RSVP.resolve(value);
+      let promise = isError(value) ? reject(value) : resolve(value);
 
       cache.set(cacheKey, promise);
     }
