@@ -125,7 +125,10 @@ export default class DataLoader {
    * method chaining.
    */
   clear(key) {
-    let { options: { cacheKeyFn }, cache } = getPrivateScope(this);
+    let {
+      options: { cacheKeyFn },
+      cache
+    } = getPrivateScope(this);
     let cacheKey = cacheKeyFn ? cacheKeyFn(key) : key;
     cache.delete(cacheKey);
     return this;
@@ -146,7 +149,10 @@ export default class DataLoader {
    * exists, no change is made. Returns itself for method chaining.
    */
   prime(key, value) {
-    let { options: { cacheKeyFn }, cache } = getPrivateScope(this);
+    let {
+      options: { cacheKeyFn },
+      cache
+    } = getPrivateScope(this);
     let cacheKey = cacheKeyFn ? cacheKeyFn(key) : key;
 
     // Only add the key if it does not already exist.
@@ -190,7 +196,10 @@ function enqueuePostPromiseJob(fn) {
 // Private: given the current state of a Loader instance, perform a batch load
 // from its current queue.
 function dispatchQueue(loader) {
-  let { options: { maxBatchSize }, queue } = getPrivateScope(loader);
+  let {
+    options: { maxBatchSize },
+    queue
+  } = getPrivateScope(loader);
   // Take the current loader queue, replacing it with an empty queue.
   getPrivateScope(loader).queue = [];
 
@@ -209,7 +218,10 @@ function dispatchQueue(loader) {
 }
 
 function dispatchQueueBatch(loader, queue) {
-  let { batchLoadFn, options: { freeze } } = getPrivateScope(loader);
+  let {
+    batchLoadFn,
+    options: { freeze }
+  } = getPrivateScope(loader);
 
   // Collect all keys to be loaded in this dispatch
   let keys = queue.map(({ key }) => key);
