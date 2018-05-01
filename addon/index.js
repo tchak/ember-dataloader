@@ -2,6 +2,7 @@ import { once } from '@ember/runloop';
 import { all, Promise, resolve, reject } from 'rsvp';
 
 import deepFreeze from './-private/deep-freeze';
+import getPrivateScope from './-private/get-private-scope';
 
 export default class DataLoader {
   constructor(
@@ -160,30 +161,6 @@ export default class DataLoader {
     return this;
   }
 }
-
-const hasWeakMap = typeof WeakMap !== 'undefined';
-const PRIVATE_SCOPE = hasWeakMap ? new WeakMap() : undefined;
-const PRIVATE_KEY = '__3454hu5yu43hr47y7efh';
-
-const getPrivateScope = hasWeakMap
-  ? function(loader) {
-      if (!PRIVATE_SCOPE.has(loader)) {
-        let scope = Object.create(null);
-        PRIVATE_SCOPE.set(loader, scope);
-        return scope;
-      }
-
-      return PRIVATE_SCOPE.get(loader);
-    }
-  : function(loader) {
-      if (!loader[PRIVATE_KEY]) {
-        let scope = Object.create(null);
-        loader[PRIVATE_KEY] = scope;
-        return scope;
-      }
-
-      return loader[PRIVATE_KEY];
-    };
 
 function isError(value) {
   return value instanceof Error;
